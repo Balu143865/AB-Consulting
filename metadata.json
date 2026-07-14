@@ -1,0 +1,6 @@
+{
+  "name": "AB Consulting",
+  "description": "AB Consulting is a premium AI Consulting Agency website and interactive client portal featuring user authentication, real-time quote request management, and live AI consulting chat powered by Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
