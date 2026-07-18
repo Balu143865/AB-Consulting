@@ -1,5 +1,6 @@
-import React from 'react';
-import { Database, User, ShieldAlert, Sun, Moon } from 'lucide-react';
+import React, { useState } from 'react';
+import { Database, User, ShieldAlert, Sun, Moon, Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { getCurrentUser } from '../lib/supabase';
 
 interface HeaderProps {
@@ -10,6 +11,7 @@ interface HeaderProps {
 
 export default function Header({ onOpenPortal, theme, onToggleTheme }: HeaderProps) {
   const activeUser = getCurrentUser();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 dark:bg-[#030712]/90 backdrop-blur-md border-b border-slate-200/50 dark:border-white/5 shadow-xs transition-colors duration-300" id="autenta-header">
@@ -35,7 +37,7 @@ export default function Header({ onOpenPortal, theme, onToggleTheme }: HeaderPro
             <a href="#cases" className="text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white transition-colors duration-300">Case Studies</a>
           </nav>
 
-          {/* Call to Action */}
+          {/* Call to Action & Mobile Menu Toggle */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <button
               onClick={onToggleTheme}
@@ -63,10 +65,67 @@ export default function Header({ onOpenPortal, theme, onToggleTheme }: HeaderPro
                 {activeUser ? 'Portal' : 'Portal'}
               </span>
             </button>
+
+            {/* Mobile Menu Icon Toggle */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 sm:p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 text-slate-700 dark:text-white rounded-full border border-slate-200 dark:border-white/10 shadow-sm transition-all md:hidden flex items-center justify-center cursor-pointer hover:scale-105 active:scale-95 flex-shrink-0 animate-fade-in"
+              aria-label="Toggle Menu"
+            >
+              {isOpen ? (
+                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ff5a22]" />
+              ) : (
+                <Menu className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              )}
+            </button>
           </div>
 
         </div>
       </div>
+
+      {/* Smooth Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="md:hidden overflow-hidden border-t border-slate-200/50 dark:border-white/5 bg-white/95 dark:bg-[#030712]/95 backdrop-blur-md"
+          >
+            <div className="px-4 py-4 space-y-1.5 flex flex-col">
+              <a 
+                href="#about" 
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-[#ff5a22] dark:hover:text-[#ff5a22] hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-all"
+              >
+                About Us
+              </a>
+              <a 
+                href="#services" 
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-[#ff5a22] dark:hover:text-[#ff5a22] hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-all"
+              >
+                Services
+              </a>
+              <a 
+                href="#process" 
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-[#ff5a22] dark:hover:text-[#ff5a22] hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-all"
+              >
+                Our Process
+              </a>
+              <a 
+                href="#cases" 
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-[#ff5a22] dark:hover:text-[#ff5a22] hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-all"
+              >
+                Case Studies
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

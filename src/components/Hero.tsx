@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Users, Star, Briefcase, Play, ArrowUpRight, TrendingUp, CheckCircle2, ShieldAlert, ThumbsUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 // @ts-ignore
@@ -8,11 +8,37 @@ interface HeroProps {
   onOpenPortal: () => void;
 }
 
-// Custom Counter Component that animates from 0 to target number
+// Custom Counter Component that animates from 0 to target number when visible in the viewport
 function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
   const [count, setCount] = useState(0);
+  const [hasAnimateTriggered, setHasAnimateTriggered] = useState(false);
+  const elementRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
+    const currentElement = elementRef.current;
+    if (!currentElement) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasAnimateTriggered(true);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(currentElement);
+
+    return () => {
+      if (currentElement) {
+        observer.unobserve(currentElement);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hasAnimateTriggered) return;
+
     let start = 0;
     const end = target;
     const duration = 1500; // 1.5 seconds
@@ -31,7 +57,7 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
     }, intervalTime);
 
     return () => clearInterval(timer);
-  }, [target]);
+  }, [target, hasAnimateTriggered]);
 
   const formatNumber = (num: number) => {
     if (num >= 1000) return `${(num / 1000).toFixed(0)}K`;
@@ -39,7 +65,7 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
   };
 
   return (
-    <span>
+    <span ref={elementRef}>
       {formatNumber(count)}
       {suffix}
     </span>
