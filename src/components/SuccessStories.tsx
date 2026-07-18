@@ -121,7 +121,13 @@ export default function SuccessStories() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6"
+        >
           <div className="text-left space-y-4 max-w-2xl">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff5a22] shadow-[0_0_8px_#ff5a22]" />
@@ -154,7 +160,7 @@ export default function SuccessStories() {
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Carousel Window */}
         <div className="overflow-hidden w-full" ref={containerRef} id="success-stories-carousel">

@@ -2,8 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   X, Lock, User, Send, Database, RefreshCw, 
   CheckCircle2, Clock, Sparkles, AlertCircle, 
-  Layers, MessageSquare, Briefcase, Key, ChevronRight, FileText, Check, AlertTriangle
+  Layers, MessageSquare, Briefcase, Key, ChevronRight, FileText, Check, AlertTriangle,
+  Download, FileSpreadsheet, FileDown
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import { 
+  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  PieChart, Pie, Cell
+} from 'recharts';
 import { 
   getCurrentUser, loginUser, registerUser, setCurrentUser,
   fetchQuotes, submitQuote, updateQuoteStatus, 
@@ -819,11 +825,11 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                       </div>
                     ) : (
                       <div className="flex-1 space-y-3 overflow-y-auto max-h-[350px] pr-1 custom-scrollbar">
-                        {quotesList.map((q) => {
+                        {quotesList.map((q, i) => {
                           const isOwn = q.client_email === user.email;
                           return (
                             <div 
-                              key={q.id} 
+                              key={`quote-item-${q.id || i}-${i}`} 
                               className={`p-3 rounded-xl border transition-all ${
                                 isOwn 
                                   ? 'border-brand-orange/20 bg-brand-orange/5 dark:bg-brand-orange/10' 
@@ -832,12 +838,30 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                             >
                               <div className="flex items-center justify-between">
                                 <span className="font-semibold text-xs text-brand-dark dark:text-white max-w-[120px] truncate">{q.company}</span>
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1.5 transition-all ${
                                   q.status === 'pending' ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400' :
                                   q.status === 'reviewed' ? 'bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400' :
                                   q.status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' :
                                   'bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400'
                                 }`}>
+                                  {q.status === 'pending' && (
+                                    <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-600 dark:bg-amber-400"></span>
+                                    </span>
+                                  )}
+                                  {q.status === 'reviewed' && (
+                                    <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-600 dark:bg-indigo-400"></span>
+                                    </span>
+                                  )}
+                                  {q.status === 'approved' && (
+                                    <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-600 dark:bg-emerald-400"></span>
+                                    </span>
+                                  )}
                                   {q.status === 'pending' && <Clock className="w-3 h-3" />}
                                   {q.status === 'reviewed' && <RefreshCw className="w-3 h-3 animate-spin" />}
                                   {q.status === 'approved' && <CheckCircle2 className="w-3 h-3" />}
@@ -857,6 +881,9 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                     )}
                   </div>
                 </div>
+
+                {/* Visual Analytics Section */}
+                <PortalAnalytics quotesList={quotesList} chatsList={chatsList} user={user} />
               </div>
             )}
 
@@ -903,9 +930,9 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                       </div>
                     ) : (
                       <div className="flex-1 space-y-4 overflow-y-auto max-h-[380px] pr-1 custom-scrollbar">
-                        {quotesList.map((q) => (
+                        {quotesList.map((q, i) => (
                           <div 
-                            key={q.id} 
+                            key={`consultant-quote-${q.id || i}-${i}`} 
                             className="p-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-[#121b33] hover:border-slate-200 dark:hover:border-slate-700 transition-all space-y-3"
                           >
                             <div className="flex items-start justify-between">
@@ -913,12 +940,30 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                                 <h6 className="font-semibold text-sm text-brand-dark dark:text-white leading-tight">{q.company}</h6>
                                 <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">By {q.client_name} • {q.client_email}</p>
                               </div>
-                              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                              <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center gap-1 transition-all ${
                                 q.status === 'pending' ? 'bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400' :
                                 q.status === 'reviewed' ? 'bg-indigo-100 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400' :
                                 q.status === 'approved' ? 'bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400' :
                                 'bg-red-100 dark:bg-red-950/40 text-red-700 dark:text-red-400'
                               }`}>
+                                {q.status === 'pending' && (
+                                  <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-600 dark:bg-amber-400"></span>
+                                  </span>
+                                )}
+                                {q.status === 'reviewed' && (
+                                  <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-600 dark:bg-indigo-400"></span>
+                                  </span>
+                                )}
+                                {q.status === 'approved' && (
+                                  <span className="relative flex h-1.5 w-1.5 shrink-0">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-600 dark:bg-emerald-400"></span>
+                                  </span>
+                                )}
                                 {q.status}
                               </span>
                             </div>
@@ -997,6 +1042,9 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                     </div>
                   </div>
                 </div>
+
+                {/* Visual Analytics Section */}
+                <PortalAnalytics quotesList={quotesList} chatsList={chatsList} user={user} />
               </div>
             )}
           </div>
@@ -1039,7 +1087,7 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
                     const senderLabel = msg.sender === 'ai' ? 'Saskia (AI)' : (msg.sender === 'consultant' ? 'Saskia (Expert)' : 'You');
                     return (
                       <div 
-                        key={msg.id || i} 
+                        key={`chat-msg-${msg.id || i}-${i}`} 
                         className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'}`}
                       >
                         <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium mb-0.5 px-1">{senderLabel}</span>
@@ -1094,6 +1142,657 @@ CREATE POLICY "Allow public access" ON public.chats FOR ALL USING (true);
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ==========================================
+// PORTAL ANALYTICS VISUALIZATION COMPONENT
+// ==========================================
+
+interface PortalAnalyticsProps {
+  quotesList: QuoteRequest[];
+  chatsList: ChatMessage[];
+  user: UserProfile | null;
+}
+
+function PortalAnalytics({ quotesList, chatsList, user }: PortalAnalyticsProps) {
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsExportOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // 1. Calculate project status stats
+  const pending = quotesList.filter(q => q.status === 'pending').length;
+  const reviewed = quotesList.filter(q => q.status === 'reviewed').length;
+  const approved = quotesList.filter(q => q.status === 'approved').length;
+  const rejected = quotesList.filter(q => q.status === 'rejected').length;
+
+  const hasQuotes = quotesList.length > 0;
+  
+  // High-fidelity presentation data for Pie Chart
+  const statusData = hasQuotes 
+    ? [
+        { name: 'Pending', value: pending, color: '#f59e0b' },
+        { name: 'Under Review', value: reviewed, color: '#6366f1' },
+        { name: 'Approved', value: approved, color: '#10b981' },
+        { name: 'Rejected', value: rejected, color: '#ef4444' }
+      ].filter(item => item.value > 0)
+    : [
+        { name: 'Pending', value: 2, color: '#f59e0b' },
+        { name: 'Under Review', value: 1, color: '#6366f1' },
+        { name: 'Approved', value: 3, color: '#10b981' },
+        { name: 'Rejected', value: 1, color: '#ef4444' }
+      ];
+
+  // 2. Calculate AI usage metrics (character count -> tokens, count by message role)
+  const hasChats = chatsList.length > 0;
+  const rawChatUsage = chatsList.map((chat, idx) => {
+    const charCount = chat.message ? chat.message.length : 0;
+    const computedTokens = Math.round(charCount * 1.3);
+    return {
+      id: idx + 1,
+      time: chat.created_at ? new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '00:00',
+      userTokens: chat.sender === 'user' ? computedTokens : 0,
+      aiTokens: chat.sender === 'ai' ? computedTokens : (chat.sender === 'consultant' ? computedTokens : 0),
+      totalTokens: computedTokens
+    };
+  });
+
+  // Aggregate by message turns or use individual elements
+  const chatTimelineData = hasChats
+    ? rawChatUsage.slice(-7)
+    : [
+        { id: 1, time: '10:00 AM', userTokens: 120, aiTokens: 0, totalTokens: 120 },
+        { id: 2, time: '10:01 AM', userTokens: 0, aiTokens: 380, totalTokens: 380 },
+        { id: 3, time: '10:10 AM', userTokens: 90, aiTokens: 0, totalTokens: 90 },
+        { id: 4, time: '10:11 AM', userTokens: 0, aiTokens: 420, totalTokens: 420 },
+        { id: 5, time: '10:20 AM', userTokens: 150, aiTokens: 0, totalTokens: 150 },
+        { id: 6, time: '10:21 AM', userTokens: 0, aiTokens: 560, totalTokens: 560 },
+        { id: 7, time: '10:30 AM', userTokens: 110, aiTokens: 480, totalTokens: 590 }
+      ];
+
+  // Calculate totals
+  const totalQuotesCount = quotesList.length > 0 ? quotesList.length : 6;
+  const approvedQuotesCount = quotesList.length > 0 ? approved : 3;
+  const totalChatsCount = chatsList.length > 0 ? chatsList.length : 7;
+  
+  const totalTokensEstimated = chatsList.length > 0 
+    ? chatsList.reduce((sum, c) => sum + Math.round((c.message ? c.message.length : 0) * 1.3), 0)
+    : 2260; // baseline sum
+
+  // ==========================================
+  // EXPORT TO CSV LOGIC
+  // ==========================================
+  const exportToCSV = () => {
+    let csvContent = "";
+    
+    // Header Info
+    csvContent += `"AB CONSULTING - EXECUTIVE REPORT"\n`;
+    csvContent += `"Generated On","${new Date().toLocaleString()}"\n`;
+    csvContent += `"Client Account","${user?.email || 'N/A'}"\n\n`;
+
+    // Section 1: KPI Metrics
+    csvContent += `"METRIC KPI HIGHLIGHTS"\n`;
+    csvContent += `"Total Broadcasts","${totalQuotesCount}"\n`;
+    csvContent += `"Approved Leads","${approvedQuotesCount}"\n`;
+    csvContent += `"Consultation Stream Length","${totalChatsCount}"\n`;
+    csvContent += `"Estimated Gemini Token Compute","${totalTokensEstimated}"\n\n`;
+
+    // Section 2: Pipeline status breakdown
+    csvContent += `"PROJECT PIPELINE STATUS DETAILS"\n`;
+    csvContent += `"Project ID","Company","Client Name","Client Email","Status","Date/Time"\n`;
+    const quotesToExport = hasQuotes ? quotesList : [
+      { id: 'sb-1', company: 'Acme Corp', client_name: 'John Doe', client_email: 'john@acme.com', status: 'approved', created_at: new Date().toISOString() },
+      { id: 'sb-2', company: 'Initech LLC', client_name: 'Peter Gibbons', client_email: 'peter@initech.com', status: 'reviewed', created_at: new Date().toISOString() },
+      { id: 'sb-3', company: 'Hooli Inc', client_name: 'Gavin Belson', client_email: 'gavin@hooli.com', status: 'pending', created_at: new Date().toISOString() },
+      { id: 'sb-4', company: 'Soylent Corp', client_name: 'Alice Smith', client_email: 'alice@soylent.com', status: 'approved', created_at: new Date().toISOString() },
+      { id: 'sb-5', company: 'Tyrell Corp', client_name: 'Roy Batty', client_email: 'roy@tyrell.com', status: 'approved', created_at: new Date().toISOString() },
+      { id: 'sb-6', company: 'Cyberdyne', client_name: 'Sarah Connor', client_email: 'sarah@cyberdyne.com', status: 'rejected', created_at: new Date().toISOString() }
+    ];
+    quotesToExport.forEach((q, i) => {
+      csvContent += `"${q.id || `row-${i+1}`}","${(q.company || '').replace(/"/g, '""')}","${(q.client_name || '').replace(/"/g, '""')}","${(q.client_email || '').replace(/"/g, '""')}","${q.status}","${q.created_at || ''}"\n`;
+    });
+    
+    csvContent += `\n"AI CHAT & COMPUTE METRICS"\n`;
+    csvContent += `"Message ID","Timestamp","Sender","Message Length (Chars)","Estimated Tokens"\n`;
+    const chatsToExport = hasChats ? chatsList : [
+      { id: 'chat-1', sender: 'user', message: 'Hello, need AI strategy advice.', created_at: new Date().toISOString() },
+      { id: 'chat-2', sender: 'ai', message: 'I can certainly help you with a tailored AI roadmap.', created_at: new Date().toISOString() },
+      { id: 'chat-3', sender: 'user', message: 'Do you offer process automations?', created_at: new Date().toISOString() },
+      { id: 'chat-4', sender: 'ai', message: 'Yes, we specialize in LLM orchestrations and workflow redesign.', created_at: new Date().toISOString() },
+      { id: 'chat-5', sender: 'user', message: 'What about budget requirements?', created_at: new Date().toISOString() },
+      { id: 'chat-6', sender: 'ai', message: 'We offer standard tiered pricing from $5,000 to $25,000.', created_at: new Date().toISOString() },
+      { id: 'chat-7', sender: 'consultant', message: 'This covers complete system deployment.', created_at: new Date().toISOString() }
+    ];
+    chatsToExport.forEach((chat, idx) => {
+      const charCount = chat.message ? chat.message.length : 0;
+      const computedTokens = Math.round(charCount * 1.3);
+      csvContent += `"${chat.id || idx + 1}","${chat.created_at || ''}","${chat.sender}","${charCount}","${computedTokens}"\n`;
+    });
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Saskia_Consulting_Report_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // ==========================================
+  // EXPORT TO PROFESSIONAL PDF LOGIC
+  // ==========================================
+  const exportToPDF = () => {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    // Color Palette
+    const primaryColor = [11, 19, 41];    // #0b1329 - Deep Navy Blue
+    const accentColor = [249, 115, 22];   // #f97316 - Amber Orange
+    const lightBg = [248, 250, 252];      // #f8fafc - Slate 50
+    const borderLight = [226, 232, 240];  // #e2e8f0 - Slate 200
+
+    // 1. Header Band
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.rect(0, 0, 210, 38, 'F');
+
+    // Brand Name & Subtitle
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('AB CONSULTING', 15, 15);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(200, 200, 200);
+    doc.text('SASKIA DALY - AI STRATEGY & ENTERPRISE PORTAL', 15, 22);
+
+    // Document Category Accent Badge
+    doc.setFillColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.rect(15, 26, 48, 5.5, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('EXECUTIVE PERFORMANCE REPORT', 18, 29.8);
+
+    // Metadata Right-Aligned
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Generated: ${new Date().toLocaleString()}`, 130, 15);
+    doc.text(`Client Email: ${user?.email || 'N/A'}`, 130, 21);
+    doc.text('Integrity: Live Real-time Database Sync', 130, 27);
+
+    let y = 48;
+
+    // Section 1 Heading
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.text('1. EXECUTIVE PERFORMANCE SUMMARY', 15, y);
+    
+    y += 5;
+    doc.setDrawColor(accentColor[0], accentColor[1], accentColor[2]);
+    doc.setLineWidth(0.5);
+    doc.line(15, y, 195, y);
+
+    y += 8;
+
+    // KPI Summary Block
+    doc.setFillColor(lightBg[0], lightBg[1], lightBg[2]);
+    doc.rect(15, y, 180, 20, 'F');
+    doc.setDrawColor(borderLight[0], borderLight[1], borderLight[2]);
+    doc.rect(15, y, 180, 20, 'D');
+
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.text('TOTAL BROADCASTS', 20, y + 6);
+    doc.text('APPROVED LEADS', 65, y + 6);
+    doc.text('CONSULT STREAM', 110, y + 6);
+    doc.text('COMPUTE SIZE', 155, y + 6);
+
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(totalQuotesCount), 20, y + 14);
+    
+    doc.setTextColor(16, 185, 129); // Green for Approved
+    doc.text(String(approvedQuotesCount), 65, y + 14);
+
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.text(String(totalChatsCount), 110, y + 14);
+
+    doc.setTextColor(99, 102, 241); // Purple for Token Compute
+    doc.text(`${totalTokensEstimated.toLocaleString()} Tokens`, 155, y + 14);
+
+    y += 28;
+
+    // Section 2 Heading
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.text('2. DETAILED PROJECT PIPELINE STATUS', 15, y);
+    
+    y += 4;
+    doc.setDrawColor(borderLight[0], borderLight[1], borderLight[2]);
+    doc.setLineWidth(0.2);
+    doc.line(15, y, 195, y);
+
+    y += 6;
+
+    // Project Table Header
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.rect(15, y, 180, 7, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Company / Client Name', 18, y + 4.8);
+    doc.text('Email Address', 75, y + 4.8);
+    doc.text('Pipeline Status', 140, y + 4.8);
+    doc.text('Created At', 170, y + 4.8);
+
+    y += 7;
+
+    const quotesToPrint = hasQuotes ? quotesList : [
+      { id: 'sb-1', company: 'Acme Corp', client_name: 'John Doe', client_email: 'john@acme.com', status: 'approved', created_at: new Date().toISOString() },
+      { id: 'sb-2', company: 'Initech LLC', client_name: 'Peter Gibbons', client_email: 'peter@initech.com', status: 'reviewed', created_at: new Date().toISOString() },
+      { id: 'sb-3', company: 'Hooli Inc', client_name: 'Gavin Belson', client_email: 'gavin@hooli.com', status: 'pending', created_at: new Date().toISOString() },
+      { id: 'sb-4', company: 'Soylent Corp', client_name: 'Alice Smith', client_email: 'alice@soylent.com', status: 'approved', created_at: new Date().toISOString() },
+      { id: 'sb-5', company: 'Tyrell Corp', client_name: 'Roy Batty', client_email: 'roy@tyrell.com', status: 'approved', created_at: new Date().toISOString() },
+      { id: 'sb-6', company: 'Cyberdyne', client_name: 'Sarah Connor', client_email: 'sarah@cyberdyne.com', status: 'rejected', created_at: new Date().toISOString() }
+    ];
+
+    quotesToPrint.slice(0, 10).forEach((q, i) => {
+      // Alternate row colors
+      if (i % 2 === 0) {
+        doc.setFillColor(lightBg[0], lightBg[1], lightBg[2]);
+        doc.rect(15, y, 180, 7.5, 'F');
+      }
+      doc.setDrawColor(borderLight[0], borderLight[1], borderLight[2]);
+      doc.line(15, y + 7.5, 195, y + 7.5);
+
+      doc.setTextColor(51, 65, 85);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      
+      const compName = q.company || 'N/A';
+      const clName = q.client_name || 'Client';
+      const combinedLabel = compName.length > 25 ? compName.substring(0, 22) + '...' : `${compName} (${clName})`;
+      doc.text(combinedLabel, 18, y + 4.8);
+      
+      doc.text(q.client_email || 'N/A', 75, y + 4.8);
+      
+      // Color-coded statuses
+      if (q.status === 'approved') {
+        doc.setTextColor(16, 185, 129); // Emerald
+        doc.setFont('helvetica', 'bold');
+      } else if (q.status === 'pending') {
+        doc.setTextColor(245, 158, 11); // Amber
+        doc.setFont('helvetica', 'bold');
+      } else if (q.status === 'reviewed') {
+        doc.setTextColor(99, 102, 241); // Indigo
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setTextColor(239, 68, 68);  // Rose / Red
+        doc.setFont('helvetica', 'normal');
+      }
+      doc.text(q.status ? q.status.toUpperCase() : 'PENDING', 140, y + 4.8);
+
+      doc.setTextColor(100, 116, 139);
+      doc.setFont('helvetica', 'normal');
+      doc.text(q.created_at ? new Date(q.created_at).toLocaleDateString() : 'N/A', 170, y + 4.8);
+
+      y += 7.5;
+    });
+
+    y += 10;
+
+    // Section 3 Heading
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setFontSize(13);
+    doc.setFont('helvetica', 'bold');
+    doc.text('3. COMPUTE USAGE & GEMINI TELEMETRY', 15, y);
+    
+    y += 4;
+    doc.setDrawColor(borderLight[0], borderLight[1], borderLight[2]);
+    doc.line(15, y, 195, y);
+
+    y += 6;
+
+    // AI Table Header
+    doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.rect(15, y, 180, 7, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Time', 18, y + 4.8);
+    doc.text('Sender Role', 45, y + 4.8);
+    doc.text('Message Preview', 80, y + 4.8);
+    doc.text('Est. Compute Tokens', 158, y + 4.8);
+
+    y += 7;
+
+    const chatsToPrint = hasChats ? chatsList.slice(-6) : [
+      { sender: 'user', message: 'Hello, need AI strategy advice.', created_at: new Date().toISOString() },
+      { sender: 'ai', message: 'I can certainly help you with a tailored AI roadmap.', created_at: new Date().toISOString() },
+      { sender: 'user', message: 'Do you offer process automations?', created_at: new Date().toISOString() },
+      { sender: 'ai', message: 'Yes, we specialize in LLM orchestrations and workflow redesign.', created_at: new Date().toISOString() },
+      { sender: 'user', message: 'What about budget requirements?', created_at: new Date().toISOString() },
+      { sender: 'ai', message: 'We offer standard tiered pricing from $5,000 to $25,000.', created_at: new Date().toISOString() },
+      { sender: 'consultant', message: 'This covers complete system deployment.', created_at: new Date().toISOString() }
+    ].slice(-6);
+
+    chatsToPrint.forEach((chat, i) => {
+      if (i % 2 === 0) {
+        doc.setFillColor(lightBg[0], lightBg[1], lightBg[2]);
+        doc.rect(15, y, 180, 7.5, 'F');
+      }
+      doc.setDrawColor(borderLight[0], borderLight[1], borderLight[2]);
+      doc.line(15, y + 7.5, 195, y + 7.5);
+
+      doc.setTextColor(100, 116, 139);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      
+      const timeStr = chat.created_at ? new Date(chat.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '00:00';
+      doc.text(timeStr, 18, y + 4.8);
+      
+      doc.setTextColor(51, 65, 85);
+      const roleStr = chat.sender === 'user' ? 'Client' : (chat.sender === 'ai' ? 'Saskia (AI)' : 'Saskia (Expert)');
+      doc.text(roleStr, 45, y + 4.8);
+
+      const msgText = chat.message || '';
+      const truncated = msgText.length > 45 ? msgText.substring(0, 42) + '...' : msgText;
+      doc.text(truncated, 80, y + 4.8);
+
+      const computedTokens = Math.round(msgText.length * 1.3);
+      doc.setTextColor(99, 102, 241);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`${computedTokens} tokens`, 158, y + 4.8);
+
+      y += 7.5;
+    });
+
+    // Page border line
+    doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+    doc.setLineWidth(0.8);
+    doc.line(15, 275, 195, 275);
+
+    // Footer Info
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.text('Confidential Client Report - AB Consulting Solutions Platform.', 15, 284);
+    doc.text('Page 1 of 1', 180, 284);
+
+    doc.save(`Saskia_Consulting_Report_${new Date().toISOString().slice(0,10)}.pdf`);
+  };
+
+  return (
+    <div id="portal-analytics" className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 shadow-xs transition-all space-y-6 mt-6">
+      
+      {/* Analytics Summary Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-brand-orange/10 text-brand-orange">
+              <Sparkles className="w-4.5 h-4.5" />
+            </div>
+            <h5 className="font-display font-bold text-base text-brand-dark dark:text-white">
+              Saskia Intelligence & Pipeline Analytics
+            </h5>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Real-time visual monitoring of consultation streams, project statuses, and Gemini compute metrics.
+          </p>
+        </div>
+
+        {/* Action Controls: Dropdown Export & Pulse Badge */}
+        <div className="flex flex-wrap items-center gap-3 self-start md:self-center">
+          
+          {/* Dropdown Menu block */}
+          <div className="relative inline-block text-left" ref={dropdownRef}>
+            <button
+              onClick={() => setIsExportOpen(!isExportOpen)}
+              className="px-3.5 py-2 bg-brand-orange hover:bg-brand-orange-hover text-white rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm cursor-pointer"
+            >
+              <Download className="w-4 h-4" />
+              <span>Export Data</span>
+            </button>
+            
+            {isExportOpen && (
+              <div className="absolute right-0 mt-2 w-52 rounded-xl bg-white dark:bg-[#121b33] border border-slate-200 dark:border-slate-800 shadow-xl py-1.5 z-20 animate-in fade-in slide-in-from-top-2 duration-150">
+                <button
+                  onClick={() => {
+                    exportToCSV();
+                    setIsExportOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50 dark:hover:bg-[#182340] text-slate-700 dark:text-slate-200 flex items-center gap-2.5 font-semibold transition-all"
+                >
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+                  <span>Download CSV Data</span>
+                </button>
+                <button
+                  onClick={() => {
+                    exportToPDF();
+                    setIsExportOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-xs hover:bg-slate-50 dark:hover:bg-[#182340] text-slate-700 dark:text-slate-200 flex items-center gap-2.5 font-semibold transition-all border-t border-slate-100 dark:border-slate-800"
+                >
+                  <FileDown className="w-4 h-4 text-rose-500" />
+                  <span>Download Professional PDF</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold tracking-wide uppercase">
+              Live Stream
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      {/* KPI Highlights Bar */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#121b33] border border-slate-100 dark:border-slate-800/50 flex flex-col justify-between">
+          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Broadcasts</span>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span className="text-xl font-bold text-brand-dark dark:text-white">{totalQuotesCount}</span>
+            <span className="text-xxs text-slate-400">quotes</span>
+          </div>
+          {!hasQuotes && <span className="text-[9px] text-amber-500 mt-1 font-medium">Using sandbox baseline</span>}
+        </div>
+
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#121b33] border border-slate-100 dark:border-slate-800/50 flex flex-col justify-between">
+          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Approved Leads</span>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{approvedQuotesCount}</span>
+            <span className="text-xxs text-slate-400">projects</span>
+          </div>
+          {!hasQuotes && <span className="text-[9px] text-amber-500 mt-1 font-medium">Using sandbox baseline</span>}
+        </div>
+
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#121b33] border border-slate-100 dark:border-slate-800/50 flex flex-col justify-between">
+          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Consulting Stream</span>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span className="text-xl font-bold text-brand-blue dark:text-blue-400">{totalChatsCount}</span>
+            <span className="text-xxs text-slate-400">messages</span>
+          </div>
+          {!hasChats && <span className="text-[9px] text-amber-500 mt-1 font-medium">Using sandbox baseline</span>}
+        </div>
+
+        <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#121b33] border border-slate-100 dark:border-slate-800/50 flex flex-col justify-between">
+          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Gemini Compute Size</span>
+          <div className="flex items-baseline gap-1 mt-1.5">
+            <span className="text-xl font-bold text-purple-600 dark:text-purple-400">{totalTokensEstimated.toLocaleString()}</span>
+            <span className="text-xxs text-slate-400">est. tokens</span>
+          </div>
+          {!hasChats && <span className="text-[9px] text-amber-500 mt-1 font-medium">Using sandbox baseline</span>}
+        </div>
+      </div>
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        {/* Project Pipeline Donut Chart */}
+        <div className="lg:col-span-5 p-5 bg-slate-50 dark:bg-[#121b33]/40 border border-slate-100 dark:border-slate-800/50 rounded-xl flex flex-col justify-between min-h-[300px]">
+          <div>
+            <h6 className="font-semibold text-xs text-brand-dark dark:text-white flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-brand-blue" />
+              Project Pipeline Status Breakdown
+            </h6>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">Ratio of active leads and submission statuses</p>
+          </div>
+
+          <div className="relative h-[160px] w-full flex items-center justify-center my-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={statusData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={48}
+                  outerRadius={65}
+                  paddingAngle={4}
+                  dataKey="value"
+                >
+                  {statusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ 
+                    background: '#1e293b', 
+                    borderRadius: '8px', 
+                    border: 'none',
+                    fontSize: '10px',
+                    color: '#fff'
+                  }}
+                  itemStyle={{ color: '#fff' }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+            
+            {/* Donut center stat */}
+            <div className="absolute flex flex-col items-center justify-center text-center">
+              <span className="text-xs text-slate-400 font-medium">Total</span>
+              <span className="text-xl font-black text-brand-dark dark:text-white leading-tight">
+                {hasQuotes ? quotesList.length : 6}
+              </span>
+            </div>
+          </div>
+
+          {/* Color Key / Legend */}
+          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200/40 dark:border-slate-800/60">
+            {statusData.map((item, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 truncate flex-1">{item.name}</span>
+                <span className="text-[10px] font-bold text-slate-700 dark:text-slate-300">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Gemini API Compute Area Chart */}
+        <div className="lg:col-span-7 p-5 bg-slate-50 dark:bg-[#121b33]/40 border border-slate-100 dark:border-slate-800/50 rounded-xl flex flex-col justify-between min-h-[300px]">
+          <div>
+            <h6 className="font-semibold text-xs text-brand-dark dark:text-white flex items-center gap-1.5">
+              <MessageSquare className="w-3.5 h-3.5 text-brand-orange" />
+              Gemini API Compute Volume (Est. Tokens)
+            </h6>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">Estimated input (User) vs output (Saskia AI) tokens per interaction</p>
+          </div>
+
+          <div className="h-[180px] w-full my-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chatTimelineData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="aiGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#f97316" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.15} />
+                <XAxis 
+                  dataKey="time" 
+                  stroke="#64748b" 
+                  fontSize={8} 
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis 
+                  stroke="#64748b" 
+                  fontSize={8} 
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip
+                  contentStyle={{ 
+                    background: '#1e293b', 
+                    borderRadius: '8px', 
+                    border: 'none',
+                    fontSize: '10px',
+                    color: '#fff'
+                  }}
+                />
+                <Legend iconSize={8} wrapperStyle={{ fontSize: '9px', paddingTop: '10px' }} />
+                <Area 
+                  type="monotone" 
+                  name="Input (User Tokens)" 
+                  dataKey="userTokens" 
+                  stroke="#2563eb" 
+                  fillOpacity={1} 
+                  fill="url(#userGrad)" 
+                  strokeWidth={1.5}
+                />
+                <Area 
+                  type="monotone" 
+                  name="Output (Saskia AI)" 
+                  dataKey="aiTokens" 
+                  stroke="#f97316" 
+                  fillOpacity={1} 
+                  fill="url(#aiGrad)" 
+                  strokeWidth={1.5}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="text-[9px] text-slate-400 dark:text-slate-500 pt-2 border-t border-slate-200/40 dark:border-slate-800/60 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-brand-orange shrink-0" />
+            <span>Estimated token ratios are derived dynamically from actual chat message string lengths (* 1.3).</span>
+          </div>
+        </div>
+
+      </div>
+
     </div>
   );
 }

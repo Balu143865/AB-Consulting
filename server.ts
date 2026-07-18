@@ -32,7 +32,14 @@ app.use(express.json());
 const apiKey = process.env.GEMINI_API_KEY;
 let ai: GoogleGenAI | null = null;
 
-if (apiKey && apiKey !== "MY_GEMINI_API_KEY") {
+// The placeholder key in .env.example starts with "AQ.Ab8RN" and has length 53.
+// We explicitly ignore placeholders so the app defaults to a polished, helpful mock AI consulting mode.
+const isPlaceholderKey = !apiKey || 
+  apiKey === "MY_GEMINI_API_KEY" || 
+  apiKey === "AQ.Ab8RN6JCpmq8gL34c8YOAoTEFdICI6GuY5RhHfgVlKhLwT1Swg" ||
+  apiKey.startsWith("AQ.Ab8RN");
+
+if (apiKey && !isPlaceholderKey) {
   try {
     ai = new GoogleGenAI({
       apiKey,

@@ -109,8 +109,10 @@ export default function Services({ onOpenPortal }: ServicesProps) {
 
           {/* CELL 2: AI-Consulting offerings */}
           <motion.div 
-            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-500 hover:border-slate-200 dark:hover:border-white/10 hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] hover:-translate-y-2 hover:scale-[1.02] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
+            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-300 hover:border-brand-orange/20 hover:bg-[#fffbf9] dark:hover:bg-[#081026] hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
             variants={cardVariants}
+            whileHover={{ y: -8, scale: 1.025 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
           >
             {/* Premium Glow Accents on Top/Bottom edges of the Card */}
             <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#ff5a22]/70 to-transparent opacity-40 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_12px_rgba(255,90,34,0.4)]" />
@@ -145,8 +147,10 @@ export default function Services({ onOpenPortal }: ServicesProps) {
 
           {/* CELL 3: Business Process Automation */}
           <motion.div 
-            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-500 hover:border-slate-200 dark:hover:border-white/10 hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] hover:-translate-y-2 hover:scale-[1.02] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
+            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-300 hover:border-brand-orange/20 hover:bg-[#fffbf9] dark:hover:bg-[#081026] hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
             variants={cardVariants}
+            whileHover={{ y: -8, scale: 1.025 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
           >
             {/* Premium Glow Accents on Top/Bottom edges of the Card */}
             <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#ff5a22]/70 to-transparent opacity-40 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_12px_rgba(255,90,34,0.4)]" />
@@ -181,8 +185,10 @@ export default function Services({ onOpenPortal }: ServicesProps) {
 
           {/* CELL 4: Secure AI Implementation strategies */}
           <motion.div 
-            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-500 hover:border-slate-200 dark:hover:border-white/10 hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] hover:-translate-y-2 hover:scale-[1.02] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
+            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-300 hover:border-brand-orange/20 hover:bg-[#fffbf9] dark:hover:bg-[#081026] hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
             variants={cardVariants}
+            whileHover={{ y: -8, scale: 1.025 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
           >
             {/* Premium Glow Accents on Top/Bottom edges of the Card */}
             <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#ff5a22]/70 to-transparent opacity-40 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_12px_rgba(255,90,34,0.4)]" />
@@ -217,8 +223,10 @@ export default function Services({ onOpenPortal }: ServicesProps) {
 
           {/* CELL 5: Knowledge centralization Solutions */}
           <motion.div 
-            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-500 hover:border-slate-200 dark:hover:border-white/10 hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] hover:-translate-y-2 hover:scale-[1.02] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
+            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-300 hover:border-brand-orange/20 hover:bg-[#fffbf9] dark:hover:bg-[#081026] hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
             variants={cardVariants}
+            whileHover={{ y: -8, scale: 1.025 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
           >
             {/* Premium Glow Accents on Top/Bottom edges of the Card */}
             <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#ff5a22]/70 to-transparent opacity-40 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_12px_rgba(255,90,34,0.4)]" />
@@ -253,8 +261,10 @@ export default function Services({ onOpenPortal }: ServicesProps) {
 
           {/* CELL 6: AI implementation */}
           <motion.div 
-            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-500 hover:border-slate-200 dark:hover:border-white/10 hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] hover:-translate-y-2 hover:scale-[1.02] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
+            className="group relative bg-white dark:bg-[#040916]/80 border border-slate-100 dark:border-white/5 rounded-2xl p-5 sm:p-6 md:p-7 flex flex-col justify-between text-left overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] dark:shadow-2xl transition-all duration-300 hover:border-brand-orange/20 hover:bg-[#fffbf9] dark:hover:bg-[#081026] hover:shadow-[0_15px_40px_rgba(255,90,34,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,90,34,0.15)] w-full min-h-[190px] sm:min-h-[210px] lg:min-h-[230px] cursor-pointer"
             variants={cardVariants}
+            whileHover={{ y: -8, scale: 1.025 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
           >
             {/* Premium Glow Accents on Top/Bottom edges of the Card */}
             <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-[#ff5a22]/70 to-transparent opacity-40 group-hover:opacity-100 group-hover:scale-x-110 transition-all duration-500 shadow-[0_0_12px_rgba(255,90,34,0.4)]" />

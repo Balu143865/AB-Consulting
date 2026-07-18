@@ -48,7 +48,7 @@ function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: str
 export default function Hero({ onOpenPortal }: HeroProps) {
   return (
     <section 
-      className="relative z-20 bg-[#050811] pt-12 pb-28 md:pt-14 md:pb-36 flex flex-col justify-between text-white" 
+      className="relative z-20 bg-[#050811] pt-6 pb-16 sm:pt-8 sm:pb-20 md:pt-10 md:pb-24 flex flex-col justify-between text-white" 
       id="hero"
     >
       {/* BACKGROUND EFFECTS matching high-end sci-fi look */}
@@ -151,7 +151,7 @@ export default function Hero({ onOpenPortal }: HeroProps) {
           </div>
 
           {/* RIGHT SIDE FUTURISTIC AI LANDSCAPE - 100% Matching Mockup Design */}
-          <div className="lg:col-span-7 relative flex items-center justify-center min-h-[460px] lg:min-h-[520px] w-full" id="hero-right-side">
+          <div className="lg:col-span-7 relative flex items-center justify-center min-h-[380px] lg:min-h-[440px] w-full" id="hero-right-side">
             
             {/* Base Glowing Hologram Platform/Pedestal Under the Head */}
             <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[280px] h-[280px] pointer-events-none z-0">

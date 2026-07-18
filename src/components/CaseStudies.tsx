@@ -78,7 +78,13 @@ export default function CaseStudies() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-16 space-y-3"
+        >
           <span className="text-xs font-bold text-[#ff5a22] uppercase tracking-[0.2em] font-mono block mb-2">
             Client Success
           </span>
@@ -89,10 +95,16 @@ export default function CaseStudies() {
           <p className="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-[15px] leading-relaxed max-w-xl mx-auto transition-colors duration-300">
             Real stories. Real impact. See how we help businesses transform with AI-powered solutions.
           </p>
-        </div>
+        </motion.div>
 
         {/* Dynamic Carousel Frame */}
-        <div className="relative max-w-6xl mx-auto bg-[#fafbfc] dark:bg-[#040916] border border-slate-100 dark:border-white/[0.04] rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.25)] transition-all duration-300">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="relative max-w-6xl mx-auto bg-[#fafbfc] dark:bg-[#040916] border border-slate-100 dark:border-white/[0.04] rounded-[2.5rem] p-6 sm:p-10 lg:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.25)] transition-all duration-300"
+        >
           
           <div className="relative overflow-hidden min-h-[380px] lg:min-h-[340px]">
             <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -193,7 +205,7 @@ export default function CaseStudies() {
             </AnimatePresence>
           </div>
 
-        </div>
+        </motion.div>
 
         {/* Carousel Pagination Dots Centered Below Frame */}
         <div className="flex justify-center items-center gap-2.5 mt-8">

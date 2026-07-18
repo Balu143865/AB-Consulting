@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send, Linkedin, Github } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export default function Footer() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -21,7 +22,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10 items-stretch">
           
           {/* Phone Card */}
-          <div className="bg-[#0c1530] dark:bg-slate-900/30 border border-slate-800 dark:border-white/5 py-4 px-5 rounded-xl flex items-center gap-4 transition-all duration-300 hover:border-brand-orange/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-[#0c1530] dark:bg-slate-900/30 border border-slate-800 dark:border-white/5 py-4 px-5 rounded-xl flex items-center gap-4 transition-all duration-300 hover:border-brand-orange/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1"
+          >
             <div className="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center text-brand-orange shrink-0">
               <Phone className="w-4.5 h-4.5" />
             </div>
@@ -29,10 +36,16 @@ export default function Footer() {
               <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 font-mono">Give Us A Call</p>
               <h4 className="font-display font-bold text-xs text-white mt-0.5">+91 6304045279</h4>
             </div>
-          </div>
+          </motion.div>
 
           {/* Email Card (Highly highlighted with brand-orange gradient) */}
-          <div className="bg-gradient-to-r from-brand-orange to-[#ff7a45] text-white py-4 px-5 rounded-xl flex items-center gap-4 shadow-lg transition-all duration-300 hover:shadow-[0_12px_35px_rgba(255,90,34,0.35)] hover:-translate-y-1">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-gradient-to-r from-brand-orange to-[#ff7a45] text-white py-4 px-5 rounded-xl flex items-center gap-4 shadow-lg transition-all duration-300 hover:shadow-[0_12px_35px_rgba(255,90,34,0.35)] hover:-translate-y-1"
+          >
             <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center text-white shrink-0">
               <Mail className="w-4.5 h-4.5" />
             </div>
@@ -40,10 +53,16 @@ export default function Footer() {
               <p className="text-[9px] font-bold uppercase tracking-widest text-white/80 font-mono">Drop Us a Line</p>
               <h4 className="font-display font-bold text-xs text-white mt-0.5">balunaikbanavath662@gmail.com</h4>
             </div>
-          </div>
+          </motion.div>
 
           {/* Location Card */}
-          <div className="bg-[#0c1530] dark:bg-slate-900/30 border border-slate-800 dark:border-white/5 py-4 px-5 rounded-xl flex items-center gap-4 transition-all duration-300 hover:border-brand-orange/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-[#0c1530] dark:bg-slate-900/30 border border-slate-800 dark:border-white/5 py-4 px-5 rounded-xl flex items-center gap-4 transition-all duration-300 hover:border-brand-orange/30 hover:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:-translate-y-1"
+          >
             <div className="w-10 h-10 rounded-lg bg-brand-orange/10 flex items-center justify-center text-brand-orange shrink-0">
               <MapPin className="w-4.5 h-4.5" />
             </div>
@@ -51,12 +70,18 @@ export default function Footer() {
               <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 font-mono">Office Location</p>
               <h4 className="font-display font-bold text-xs text-white mt-0.5">Macherla, Palnadu, AP - 522426</h4>
             </div>
-          </div>
+          </motion.div>
 
         </div>
 
         {/* 2. MAIN FOOTER CONTENT COLS */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-slate-800/80 dark:border-white/5">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-slate-800/80 dark:border-white/5"
+        >
           
           {/* Col 1: Brand Info */}
           <div className="md:col-span-4 space-y-4">
@@ -202,7 +227,7 @@ export default function Footer() {
             )}
           </div>
 
-        </div>
+        </motion.div>
 
         {/* 3. COPYRIGHT & LEGAL ROW */}
         <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] text-slate-500 font-medium">

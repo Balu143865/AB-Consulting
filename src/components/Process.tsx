@@ -36,7 +36,13 @@ export default function Process() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-20"
+        >
           <span className="text-xs font-bold text-[#ff5a22] uppercase tracking-[0.2em] font-mono block mb-2">
             OUR METHODOLOGY
           </span>
@@ -47,7 +53,7 @@ export default function Process() {
           <p className="text-slate-500 dark:text-slate-400 font-medium text-sm sm:text-[15px] leading-relaxed max-w-xl mx-auto transition-colors duration-300">
             We follow a proven, AI-powered methodology to deliver intelligent, scalable, and impactful solutions for your business.
           </p>
-        </div>
+        </motion.div>
 
         {/* Steps Grid Container */}
         <div className="relative mt-16">

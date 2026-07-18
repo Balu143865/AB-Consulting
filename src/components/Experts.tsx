@@ -41,7 +41,13 @@ export default function Experts() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10 space-y-2.5">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-2xl mx-auto mb-10 space-y-2.5"
+        >
           <div className="flex items-center justify-center gap-3">
             <div className="w-6 h-[1px] bg-[#ff5a22]/40" />
             <span className="text-xs font-bold text-[#ff5a22] uppercase tracking-[0.25em] font-mono block">
@@ -59,7 +65,7 @@ export default function Experts() {
           <p className="text-slate-500 dark:text-slate-400 font-medium text-xs sm:text-sm leading-relaxed max-w-lg mx-auto transition-colors duration-300">
             Credibly innovate granular internal or organic sources whereas high standards in web-readiness.
           </p>
-        </div>
+        </motion.div>
 
         {/* Team Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
