@@ -116,3 +116,131 @@
   animation: light-orange-border-glow-flow 4s ease-in-out infinite;
 }
 
+/* ==========================================
+   PRINT-SPECIFIC CSS CONFIGURATION
+   ========================================== */
+@media print {
+  /* Root element & overall reset for pure black & white legible printing */
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+
+  /* Hide highly interactive, floating, decorative, or navigation elements */
+  header,
+  footer,
+  #autenta-header,
+  #hero-particles,
+  .floating-widget,
+  button,
+  a.btn,
+  .btn,
+  [role="dialog"],
+  #portal-panel,
+  .theme-toggle,
+  .scroll-to-top,
+  .nav-menu,
+  iframe {
+    display: none !important;
+  }
+
+  /* Expand full structural layout into printable dimensions */
+  main,
+  section,
+  .container,
+  #hero-right-side,
+  .printable-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 1.5rem 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    float: none !important;
+  }
+
+  /* Prevent awkward page-breaks mid-elements */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    break-after: avoid;
+    color: #000000 !important;
+    font-weight: bold !important;
+  }
+
+  p, li, blockquote {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  section,
+  article,
+  .card,
+  .grid > div,
+  .border {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    margin-bottom: 2.5rem !important;
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Text readability optimization across components */
+  p, span, li, dt, dd, td, th {
+    color: #1e293b !important; /* Solid charcoal gray for optimal print contrast */
+  }
+
+  /* Display printable URL details next to actual links */
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+    font-size: 85%;
+    color: #64748b;
+    word-break: break-all;
+  }
+
+  /* Handle images cleanly, preventing split clipping */
+  img, svg, figure {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    max-width: 100% !important;
+    height: auto !important;
+    filter: grayscale(100%); /* Save colored ink and print cleanly in B&W */
+  }
+
+  /* Print margins definition */
+  @page {
+    size: A4 portrait;
+    margin: 2cm 1.5cm;
+  }
+
+  /* Reset dark theme styles, forcing light theme aesthetics during printing */
+  .dark, 
+  .dark * {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-color: #e2e8f0 !important;
+  }
+
+  .dark p, 
+  .dark span, 
+  .dark h1, 
+  .dark h2, 
+  .dark h3, 
+  .dark h4, 
+  .dark h5, 
+  .dark h6 {
+    color: #000000 !important;
+  }
+
+  /* Stylize high contrast text color for primary brand accents */
+  .text-brand-orange,
+  .text-[#ff5a22] {
+    color: #d84315 !important; /* Rich brick orange suitable for print legibility */
+    font-weight: 600 !important;
+  }
+}
+
+

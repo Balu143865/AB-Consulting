@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, Users, Star, Briefcase, Play, ArrowUpRight, TrendingUp, CheckCircle2, ShieldAlert, ThumbsUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import ParticleBackground from './ParticleBackground';
 // @ts-ignore
 import glowingHeadImg from '../assets/images/glowing_ai_hologram_head_1783951135502.jpg';
 
@@ -80,6 +81,9 @@ export default function Hero({ onOpenPortal }: HeroProps) {
     >
       {/* BACKGROUND EFFECTS matching high-end sci-fi look */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Particle System Background */}
+        <ParticleBackground />
+
         {/* Subtle high-tech grid overlay */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:3.5rem_3.5rem]" />
         
