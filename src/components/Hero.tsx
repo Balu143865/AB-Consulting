@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Users, Star, Briefcase, Play, ArrowUpRight, TrendingUp, CheckCircle2, ShieldAlert, ThumbsUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-const glowingHeadImg = "/src/assets/images/glowing_ai_hologram_head_1783951135502.jpg";
+// @ts-ignore
+import glowingHeadImg from '../assets/images/glowing_ai_hologram_head_1783951135502.jpg';
 
 interface HeroProps {
   onOpenPortal: () => void;
